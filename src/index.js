@@ -2,16 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+import Base from 'terra-base';
+import appTranslations from '../aggregated-translations/en.js';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const locale = (navigator.languages && navigator.languages[0])
+               || navigator.language
+               || navigator.userLanguage
+               || 'en';
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+ReactDOM.render(<Base locale={locale} customMessages={appTranslations}>
+                    <App />
+                </Base>, document.getElementById('root'));
