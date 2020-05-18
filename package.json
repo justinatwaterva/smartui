@@ -29,6 +29,7 @@
     "terra-i18n": "^4.28.0"
   },
   "scripts": {
+	"wp": "webpack --config webpack.config.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
