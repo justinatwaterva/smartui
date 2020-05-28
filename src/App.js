@@ -59,10 +59,63 @@ class App extends React.Component {
     .then(response => {
       //self.setState({ rating_response: "Status: " + data.status });
       self.setState({ ratingdata:  JSON.stringify(response) });
+      self.setState({data:  response });
+      //self.setState({messages:  JSON.stringify(response.messages) });
+
+      if ( response.httpCode == 'OK' ) {
+        self.setState({ patientInfo: 
+          <ul>
+            <li>ID: { this.getPatientId() }</li>
+            <li>Gender: {response.sex }</li>
+            <li>MRN: {response.mrn }</li>
+            <li>Name: {response.name }</li>
+            <li>Birthdate: {response.dob }</li>
+            <li>Combined Evaluation Percentage :  {response.ratingData.combinedEvalPercent}</li>
+            <li>Combined Evaluation Effective Date: { response.ratingData.combinedEvalEffectiveDt.toLocaleString()}}</li>
+            <li>Rating Disabilities : </li>
+          </ul>});
+
+
+          var disabilityArray = []
+          for (var i = 0; i < response.ratingData.ratedDisabilities.length; i++) {
+            disabilityArray.push(
+                <>
+                  <li>Disability {i+1}</li>
+                  <li>Disability Line 1 : {response.ratingData.ratedDisabilities[i].disabilityLine1}</li>
+                  <li>Disability Line 2 : {response.ratingData.ratedDisabilities[i].serviceConnectedLine2}</li>
+                  <li>Disability Line 3 : {response.ratingData.ratedDisabilities[i].disabilityHistLine3}</li>
+                </>
+              )
+          }
+          self.setState({ ratedDisabilities : disabilityArray });
+      } else {
+        self.setState( { messages : response.messages });
+
+        var messagesArray = []
+        for (var k = 0; k < response.messages.length; k++) {
+          messagesArray.push(
+              <>
+                <li>Message {k+1}</li>
+                <li>Code : {response.messages[k].code}</li>
+                <li>Description : {response.messages[k].description}</li>
+              </>
+            )
+        }
+        self.setState({ messagesArray : messagesArray });
+
+
+
+      }
+
       return response;
     });
   } 
  
+  myFunction(disability, index) {
+    <li>Rating Disability : {JSON.stringify(disability)}</li>
+  }
+
+
 
   getAccessToken() {
     let sessionId = sessionStorage.getItem("SMART_KEY");
@@ -88,11 +141,16 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-		<TestAlert />
+		<TestAlert/> 
         {this.state && this.state.patientName }
         {this.state && this.state.patientInfo }
-        <br></br>
+        {this.state && this.state.ratedDisabilities}
+
         {this.state && this.state.ratingdata}
+        <br></br>
+
+        {this.state && this.state.messagesArray}
+
       </div>
     );
   }
